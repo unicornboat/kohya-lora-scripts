@@ -34,5 +34,5 @@ httpx>=0.24.1
 open-clip-torch>=2.20.0
 lycoris-lora>=2.1.0.post3
 dadaptation>=3.1
-protobuf>=3.20.2,<5.0.0  # 兼容 Google Cloud 和 TensorFlow
-pydantic>=2.7.4,<3.0.0  # 兼容 langchain 和 google-genai
+protobuf>=3.20.2,<5.0.0
+pydantic==2.10.6
