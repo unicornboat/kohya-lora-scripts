@@ -5,7 +5,6 @@ import platform
 import subprocess
 import sys
 import asyncio
-import gradio as gr
 
 # Colab-specific imports
 try:
