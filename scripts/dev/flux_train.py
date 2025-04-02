@@ -68,20 +68,20 @@ def train(args):
     # ), "weighted_captions is not supported currently / weighted_captionsは現在サポートされていません"
     if args.cache_text_encoder_outputs_to_disk and not args.cache_text_encoder_outputs:
         logger.warning(
-            "cache_text_encoder_outputs_to_disk is enabled, so cache_text_encoder_outputs is also enabled / cache_text_encoder_outputs_to_diskが有効になっているため、cache_text_encoder_outputsも有効になります"
+            "cache_text_encoder_outputs_to_disk is enabled, so cache_text_encoder_outputs is also enabled / cache_text_encoder_outputs_to_disk 已启用，因此 cache_text_encoder_outputs 也已启用"
         )
         args.cache_text_encoder_outputs = True
 
     if args.cpu_offload_checkpointing and not args.gradient_checkpointing:
         logger.warning(
-            "cpu_offload_checkpointing is enabled, so gradient_checkpointing is also enabled / cpu_offload_checkpointingが有効になっているため、gradient_checkpointingも有効になります"
+            "cpu_offload_checkpointing is enabled, so gradient_checkpointing is also enabled / 由于 cpu_offload_checkpointing 已启用，gradient_checkpointing 也已启用"
         )
         args.gradient_checkpointing = True
 
     assert (
         args.blocks_to_swap is None or args.blocks_to_swap == 0
     ) or not args.cpu_offload_checkpointing, (
-        "blocks_to_swap is not supported with cpu_offload_checkpointing / blocks_to_swapはcpu_offload_checkpointingと併用できません"
+        "blocks_to_swap is not supported with cpu_offload_checkpointing / blocks_to_swap 不能与 cpu_offload_checkpointing 一起使用"
     )
 
     cache_latents = args.cache_latents
@@ -106,7 +106,7 @@ def train(args):
             ignored = ["train_data_dir", "in_json"]
             if any(getattr(args, attr) is not None for attr in ignored):
                 logger.warning(
-                    "ignore following options because config file is found: {0} / 設定ファイルが利用されるため以下のオプションは無視されます: {0}".format(
+                    "ignore following options because config file is found: {0} / 由于使用了配置文件，因此以下选项将被忽略：: {0}".format(
                         ", ".join(ignored)
                     )
                 )
@@ -168,19 +168,19 @@ def train(args):
         return
     if len(train_dataset_group) == 0:
         logger.error(
-            "No data found. Please verify the metadata file and train_data_dir option. / 画像がありません。メタデータおよびtrain_data_dirオプションを確認してください。"
+            "No data found. Please verify the metadata file and train_data_dir option. / 没有图像。检查元数据和 train_data_dir 选项。"
         )
         return
 
     if cache_latents:
         assert (
             train_dataset_group.is_latent_cacheable()
-        ), "when caching latents, either color_aug or random_crop cannot be used / latentをキャッシュするときはcolor_augとrandom_cropは使えません"
+        ), "when caching latents, either color_aug or random_crop cannot be used / 缓存 latent 时不能使用 color_aug 和 random_crop"
 
     if args.cache_text_encoder_outputs:
         assert (
             train_dataset_group.is_text_encoder_output_cacheable()
-        ), "when caching text encoder output, either caption_dropout_rate, shuffle_caption, token_warmup_step or caption_tag_dropout_rate cannot be used / text encoderの出力をキャッシュするときはcaption_dropout_rate, shuffle_caption, token_warmup_step, caption_tag_dropout_rateは使えません"
+        ), "when caching text encoder output, either caption_dropout_rate, shuffle_caption, token_warmup_step or caption_tag_dropout_rate cannot be used / 缓存文本编码器的输出时，caption_dropout_rate、shuffle_caption、token_warmup_step 和 caption_tag_dropout_rate 不能使用。"
 
     # acceleratorを準備する
     logger.info("prepare accelerator")
@@ -289,7 +289,7 @@ def train(args):
         if blocks_to_swap > 0:
             logger.warning(
                 "double_blocks_to_swap and single_blocks_to_swap are deprecated. Use blocks_to_swap instead."
-                " / double_blocks_to_swapとsingle_blocks_to_swapは非推奨です。blocks_to_swapを使ってください。"
+                " / double_blocks_to_swap 和 single_blocks_to_swap 已被弃用。使用blocks_to_swap。"
             )
             logger.info(
                 f"double_blocks_to_swap={args.double_blocks_to_swap} and single_blocks_to_swap={args.single_blocks_to_swap} are converted to blocks_to_swap={blocks_to_swap}."
@@ -407,7 +407,7 @@ def train(args):
             len(train_dataloader) / accelerator.num_processes / args.gradient_accumulation_steps
         )
         accelerator.print(
-            f"override steps. steps for {args.max_train_epochs} epochs is / 指定エポックまでのステップ数: {args.max_train_steps}"
+            f"override steps. steps for {args.max_train_epochs} epochs is / 到达指定纪元的步数: {args.max_train_steps}"
         )
 
     # データセット側にも学習ステップを送信
@@ -425,7 +425,7 @@ def train(args):
     if args.full_fp16:
         assert (
             args.mixed_precision == "fp16"
-        ), "full_fp16 requires mixed precision='fp16' / full_fp16を使う場合はmixed_precision='fp16'を指定してください。"
+        ), "full_fp16 requires mixed precision='fp16' / 如果使用full_fp16，请指定mixed_precision='fp16'"
         accelerator.print("enable full fp16 training.")
         flux.to(weight_dtype)
         if clip_l is not None:
@@ -434,7 +434,7 @@ def train(args):
     elif args.full_bf16:
         assert (
             args.mixed_precision == "bf16"
-        ), "full_bf16 requires mixed precision='bf16' / full_bf16を使う場合はmixed_precision='bf16'を指定してください。"
+        ), "full_bf16 requires mixed precision='bf16' / 如果使用full_bf16，请指定mixed_precision='bf16'"
         accelerator.print("enable full bf16 training.")
         flux.to(weight_dtype)
         if clip_l is not None:
@@ -536,9 +536,9 @@ def train(args):
 
     # 学習する
     # total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
-    accelerator.print("running training / 学習開始")
-    accelerator.print(f"  num examples / サンプル数: {train_dataset_group.num_train_images}")
-    accelerator.print(f"  num batches per epoch / 1epochのバッチ数: {len(train_dataloader)}")
+    accelerator.print("running training / 开始学习")
+    accelerator.print(f"  num examples / 样本数量: {train_dataset_group.num_train_images}")
+    accelerator.print(f"  num batches per epoch / 1 个 epoch 的批次数: {len(train_dataloader)}")
     accelerator.print(f"  num epochs / epoch数: {num_train_epochs}")
     accelerator.print(
         f"  batch size per device / バッチサイズ: {', '.join([str(d.batch_size) for d in train_dataset_group.datasets])}"
@@ -546,8 +546,8 @@ def train(args):
     # accelerator.print(
     #     f"  total train batch size (with parallel & distributed & accumulation) / 総バッチサイズ（並列学習、勾配合計含む）: {total_batch_size}"
     # )
-    accelerator.print(f"  gradient accumulation steps / 勾配を合計するステップ数 = {args.gradient_accumulation_steps}")
-    accelerator.print(f"  total optimization steps / 学習ステップ数: {args.max_train_steps}")
+    accelerator.print(f"  gradient accumulation steps / 对梯度求和的步数。 = {args.gradient_accumulation_steps}")
+    accelerator.print(f"  total optimization steps / 学习步骤: {args.max_train_steps}")
 
     progress_bar = tqdm(range(args.max_train_steps), smoothing=0, disable=not accelerator.is_local_main_process, desc="steps")
     global_step = 0
@@ -801,41 +801,41 @@ def setup_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mem_eff_save",
         action="store_true",
-        help="[EXPERIMENTAL] use memory efficient custom model saving method / メモリ効率の良い独自のモデル保存方法を使う",
+        help="[EXPERIMENTAL] use memory efficient custom model saving method / 使用自定义的内存高效模型存储方法",
     )
 
     parser.add_argument(
         "--fused_optimizer_groups",
         type=int,
         default=None,
-        help="**this option is not working** will be removed in the future / このオプションは動作しません。将来削除されます",
+        help="**this option is not working** will be removed in the future / 该选项无效。将来会被删除",
     )
     parser.add_argument(
         "--blockwise_fused_optimizers",
         action="store_true",
-        help="enable blockwise optimizers for fused backward pass and optimizer step / fused backward passとoptimizer step のためブロック単位のoptimizerを有効にする",
+        help="enable blockwise optimizers for fused backward pass and optimizer step / 为融合后向传递和优化器步骤启用块优化器",
     )
     parser.add_argument(
         "--skip_latents_validity_check",
         action="store_true",
-        help="[Deprecated] use 'skip_cache_check' instead / 代わりに 'skip_cache_check' を使用してください",
+        help="[Deprecated] use 'skip_cache_check' instead / 改用“skip_cache_check”",
     )
     parser.add_argument(
         "--double_blocks_to_swap",
         type=int,
         default=None,
-        help="[Deprecated] use 'blocks_to_swap' instead / 代わりに 'blocks_to_swap' を使用してください",
+        help="[Deprecated] use 'blocks_to_swap' instead / 改用“blocks_to_swap”",
     )
     parser.add_argument(
         "--single_blocks_to_swap",
         type=int,
         default=None,
-        help="[Deprecated] use 'blocks_to_swap' instead / 代わりに 'blocks_to_swap' を使用してください",
+        help="[Deprecated] use 'blocks_to_swap' instead / 改用“blocks_to_swap”",
     )
     parser.add_argument(
         "--cpu_offload_checkpointing",
         action="store_true",
-        help="[EXPERIMENTAL] enable offloading of tensors to CPU during checkpointing / チェックポイント時にテンソルをCPUにオフロードする",
+        help="[EXPERIMENTAL] enable offloading of tensors to CPU during checkpointing / 检查点时将张量卸载到 CPU",
     )
     return parser
 
