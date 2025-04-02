@@ -6,7 +6,7 @@ Schema.intersect([
     Schema.object({
         train_data_dir: Schema.string().role('filepicker', { type: "folder", internal: "train-dir" }).default("./train/aki").description("训练数据集路径"),
         reg_data_dir: Schema.string().role('filepicker', { type: "folder", internal: "train-dir" }).description("正则化数据集路径。默认留空，不使用正则化图像"),
-        resolution: Schema.string().default("512,512").description("训练图片分辨率，宽x高。支持非正方形，但必须是 64 倍数。"),
+        resolution: Schema.string().default("960,1280").description("训练图片分辨率，宽x高。支持非正方形，但必须是 64 倍数。"),
     }).description("数据集设置"),
 
     Schema.object({
@@ -17,12 +17,12 @@ Schema.intersect([
 
     Schema.object({
         max_train_epochs: Schema.number().min(1).default(10).description("最大训练 epoch（轮数）"),
-        train_batch_size: Schema.number().min(1).default(4).description("批量大小"),
+        train_batch_size: Schema.number().min(1).default(1).description("批量大小"),
     }).description("训练相关参数"),
 
     Schema.intersect([
         Schema.object({
-            unet_lr: Schema.string().default("1e-4").description("U-Net 学习率"),
+            unet_lr: Schema.string().default("5e-4").description("U-Net 学习率"),
             text_encoder_lr: Schema.string().default("1e-5").description("文本编码器学习率"),
             lr_scheduler: Schema.union([
                 "cosine",
