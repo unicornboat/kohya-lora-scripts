@@ -93,8 +93,8 @@
 
         SAVE_SETTINGS: Schema.intersect([
             Schema.object({
-                output_name: Schema.string().default("aki").description("模型保存名称"),
-                output_dir: Schema.string().role('filepicker', { type: "folder" }).default("./output").description("模型保存文件夹"),
+                output_name: Schema.string().default("lora").description("模型保存名称"),
+                output_dir: Schema.string().role('filepicker', { type: "folder" }).default("/content/output").description("模型保存文件夹"),
                 save_model_as: Schema.union(["safetensors", "pt", "ckpt"]).default("safetensors").description("模型保存格式"),
                 save_precision: Schema.union(["fp16", "float", "bf16"]).default("fp16").description("模型保存精度"),
                 save_every_n_epochs: Schema.number().default(2).description("每 N epoch（轮）自动保存一次模型"),
