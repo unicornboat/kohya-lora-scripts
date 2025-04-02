@@ -10,14 +10,14 @@ Schema.intersect([
     }).description("数据集设置"),
 
     Schema.object({
-        output_name: Schema.string().default("aki").description("模型保存名称"),
-        output_dir: Schema.string().default("./output").role('filepicker', { type: "folder" }).description("模型保存文件夹"),
-        save_every_n_epochs: Schema.number().default(2).description("每 N epoch（轮）自动保存一次模型"),
+        output_name: Schema.string().default("lora").description("模型保存名称"),
+        output_dir: Schema.string().default("/content/output").role('filepicker', { type: "folder" }).description("模型保存文件夹"),
+        save_every_n_epochs: Schema.number().default(1).description("每 N epoch（轮）自动保存一次模型"),
     }).description("保存设置"),
 
     Schema.object({
         max_train_epochs: Schema.number().min(1).default(10).description("最大训练 epoch（轮数）"),
-        train_batch_size: Schema.number().min(1).default(1).description("批量大小"),
+        train_batch_size: Schema.number().min(1).default(4).description("批量大小"),
     }).description("训练相关参数"),
 
     Schema.intersect([

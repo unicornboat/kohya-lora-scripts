@@ -1,10 +1,10 @@
 Schema.intersect([
     Schema.object({
         model_train_type: Schema.string().default("flux-lora").disabled().description("训练种类"),
-        pretrained_model_name_or_path: Schema.string().role('filepicker', { type: "model-file" }).default("./sd-models/model.safetensors").description("Flux 模型路径"),
-        ae: Schema.string().role('filepicker', { type: "model-file" }).description("AE 模型文件路径"),
-        clip_l: Schema.string().role('filepicker', { type: "model-file" }).description("clip_l 模型文件路径"),
-        t5xxl: Schema.string().role('filepicker', { type: "model-file" }).description("t5xxl 模型文件路径"),
+        pretrained_model_name_or_path: Schema.string().role('filepicker', { type: "model-file" }).default("./sd-models/flux1_dev_fp8.safetensors").description("Flux 模型路径"),
+        ae: Schema.string().role('filepicker', { type: "model-file" }).default("./sd-models/flux_ae.safetensors").description("AE 模型文件路径"),
+        clip_l: Schema.string().role('filepicker', { type: "model-file" }).default("./sd-models/clip_l.safetensors").description("clip_l 模型文件路径"),
+        t5xxl: Schema.string().role('filepicker', { type: "model-file" }).default("./sd-models/t5xxl_fp16.safetensors").description("t5xxl 模型文件路径"),
         resume: Schema.string().role('filepicker', { type: "folder" }).description("从某个 `save_state` 保存的中断状态继续训练，填写文件路径"),
     }).description("训练用模型"),
 
@@ -21,8 +21,8 @@ Schema.intersect([
 
     Schema.object(
         UpdateSchema(SHARED_SCHEMAS.RAW.DATASET_SETTINGS, {
-            resolution: Schema.string().default("768,768").description("训练图片分辨率，宽x高。支持非正方形，但必须是 64 倍数。"),
-            enable_bucket: Schema.boolean().default(true).description("启用 arb 桶以允许非固定宽高比的图片"),
+            resolution: Schema.string().default("960,1280").description("训练图片分辨率，宽x高。支持非正方形，但必须是 64 倍数。"),
+            enable_bucket: Schema.boolean().default(false).description("启用 arb 桶以允许非固定宽高比的图片"),
             min_bucket_reso: Schema.number().default(256).description("arb 桶最小分辨率"),
             max_bucket_reso: Schema.number().default(2048).description("arb 桶最大分辨率"),
             bucket_reso_steps: Schema.number().default(64).description("arb 桶分辨率划分单位，FLUX 需大于 64"),
